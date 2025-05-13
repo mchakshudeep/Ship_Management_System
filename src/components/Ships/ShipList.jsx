@@ -10,10 +10,6 @@ const ShipList = () => {
         return <div className="p-4">No ships found.</div>;
     }
 
-    const handleView = (id) => {
-        navigate(`/ships/${id}`);
-    };
-
     const handleEdit = (id) => {
         navigate(`/ships/edit/${id}`);
     };
@@ -46,12 +42,6 @@ const ShipList = () => {
                             <td className="px-4 py-2">{ship.flag}</td>
                             <td className="px-4 py-2">{ship.status}</td>
                             <td className="px-4 py-2 space-x-2">
-                                <button 
-                                    onClick={() => handleView(ship.id)}
-                                    className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-                                >
-                                    View
-                                </button>
                                 <button 
                                     onClick={() => handleEdit(ship.id)}
                                     className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
