@@ -1,14 +1,17 @@
 import React, { useState, useContext } from "react";
 import ShipsContext from "../../contexts/ShipsContext";
+import Ship from "../../models/Ship"; // Import your Ship class
 
 const ShipForm = ({ onClose }) => {
   const { addShip } = useContext(ShipsContext);
+
   const [form, setForm] = useState({
     name: "",
     imoNumber: "",
     flag: "",
     status: "Active",
   });
+
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -17,12 +20,16 @@ const ShipForm = ({ onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.name || !form.imoNumber || !form.flag) {
-      setError("All fields are required.");
-      return;
+    const { name, imoNumber, flag, status } = form;
+
+    try {
+      const newShip = new Ship(name, imoNumber, flag, status); // Use the Ship class
+      newShip.validate(); // optional validation method
+      addShip(newShip);
+      onClose();
+    } catch (err) {
+      setError(err.message);
     }
-    addShip(form);
-    onClose(); // Close the modal
   };
 
   return (

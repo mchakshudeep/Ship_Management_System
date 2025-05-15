@@ -1,9 +1,8 @@
 import React, { useContext, useState } from "react";
 import ShipsContext from "../../contexts/ShipsContext";
-
+import { useNavigate } from "react-router-dom";
 import DeleteShipModal from "../modals/DeleteShipModal";
 import EditShipModal from "../modals/EditShipModal";
-
 
 const ShipList = () => {
     const { ships, deleteShip, editShip } = useContext(ShipsContext);
@@ -12,7 +11,8 @@ const ShipList = () => {
     const [editingShip, setEditingShip] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
-    const [searchParameter, setSearchParameter] = useState("name"); // New state for selected search parameter
+    const [searchParameter, setSearchParameter] = useState("name");
+    const navigate = useNavigate();
 
     const handleDeleteClick = (id) => {
         setShipToDelete(id);
@@ -38,11 +38,10 @@ const ShipList = () => {
 
     const handleEditSubmit = (e) => {
         e.preventDefault();
-        editShip(editingShip.id, editingShip);
-        setEditingShip(null); // Close the modal
+        editShip(editingShip.shipId, editingShip);  // Use shipId instead of id
+        setEditingShip(null);
     };
 
-    // Updated filteredShips logic to filter based on selected parameter
     const filteredShips = ships.filter((ship) => {
         const searchValue = ship[searchParameter]?.toLowerCase() || "";
         const matchesSearch = searchValue.includes(searchTerm.toLowerCase());
@@ -57,7 +56,7 @@ const ShipList = () => {
             <div className="flex flex-col md:flex-row justify-between mb-4 gap-2">
                 <input
                     type="text"
-                    placeholder={`Search by ${searchParameter}...`} // Dynamic placeholder
+                    placeholder={`Search by ${searchParameter}...`}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="border px-2 py-1 rounded w-full md:w-1/2"
@@ -99,13 +98,19 @@ const ShipList = () => {
                     </thead>
                     <tbody>
                         {filteredShips.map((ship) => (
-                            <tr key={ship.id} className="border-t">
-                                <td className="px-4 py-2">{ship.id}</td>
+                            <tr key={ship.shipId} className="border-t">
+                                <td className="px-4 py-2">{ship.shipId}</td>
                                 <td className="px-4 py-2">{ship.name}</td>
                                 <td className="px-4 py-2">{ship.imoNumber}</td>
                                 <td className="px-4 py-2">{ship.flag}</td>
                                 <td className="px-4 py-2">{ship.status}</td>
                                 <td className="px-4 py-2 flex gap-2">
+                                    <button
+                                        onClick={() => navigate(`/ships/${ship.shipId}`)}
+                                        className="bg-blue-600 text-white px-2 py-1 rounded"
+                                    >
+                                        View
+                                    </button>
                                     <button
                                         onClick={() => handleEdit(ship)}
                                         className="bg-yellow-500 text-white px-2 py-1 rounded"
@@ -113,7 +118,7 @@ const ShipList = () => {
                                         Edit
                                     </button>
                                     <button
-                                        onClick={() => handleDeleteClick(ship.id)}
+                                        onClick={() => handleDeleteClick(ship.shipId)}
                                         className="bg-red-600 text-white px-2 py-1 rounded"
                                     >
                                         Delete
